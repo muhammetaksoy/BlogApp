@@ -3,10 +3,11 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 
+
 import blogRoutes from "./routes/blogs.js";
 import categoryRoutes from "./routes/categories.js";
 import commentRoutes from "./routes/comments.js";
-
+import userRoutes from "./routes/users.js";
 
 const app=express();
 dotenv.config();
@@ -23,6 +24,7 @@ app.get("/",(req,res)=>{
 app.use("/blogs",blogRoutes);
 app.use("/categories",categoryRoutes);
 app.use("/comments",commentRoutes);
+app.use("/users",userRoutes);
 
 const PORT=process.env.PORT || 5000;
 mongoose.connect(process.env.CONNECTION_URL,{
