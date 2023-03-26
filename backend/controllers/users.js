@@ -3,36 +3,36 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 export const register = async (req, res) => {
- // Our register logic starts here
+
   try {
-    // Get user input
+     // kullanıcı bilgilerini al
     const { firstName, lastName, email, password } = req.body;
 
-    // Validate user input
+     // email ve password girilmiş mi kontrolü
     if (!(email && password && firstName && lastName)) {
       res.status(400).send("All input is required");
     }
 
-    // check if user already exist
-    // Validate if user exist in our database
+ 
     const oldUser = await User.findOne({ email });
 
+  // kullanıcının veritabanında kayıtlı olma kontrolü
     if (oldUser) {
       return res.status(409).send("User Already Exist. Please Login");
     }
 
-    //Encrypt user password
+    //şifreyi şifrele
     let encryptedPassword = await bcrypt.hash(password, 10);
 
-    // Create user in our database
+    // veritabanında kullanıcı oluştur
     const user = await User.create({
       firstName,
       lastName,
-      email: email.toLowerCase(), // sanitize: convert email to lowercase
+      email: email.toLowerCase(),
       password: encryptedPassword,
     });
 
-    // Create token
+    // tokeni oluştur
     const token = jwt.sign(
       { user_id: user._id, email },
       process.env.TOKEN_KEY,
@@ -40,49 +40,59 @@ export const register = async (req, res) => {
         expiresIn: "2h",
       }
     );
-    // save user token
+    // tokeni kaydet
     user.token = token;
+    await user.save();
 
-    // return new user
-    res.status(201).json(user);
+    // yeni kullanıcıyı responseda döndür
+    res.status(200).json(user);
   } catch (err) {
-    console.log(err);
+    res.status(404).json({
+      message: err.message,
+    });
   }
-  // Our register logic ends her
 };
-
 
 export const login = async (req, res) => {
   try {
-    // Get user input
+    // kullanıcı bilgilerini al
     const { email, password } = req.body;
 
-    // Validate user input
+    // email ve password girilmiş mi kontrolü
     if (!(email && password)) {
       res.status(400).send("All input is required");
     }
-    // Validate if user exist in our database
+    // kullanıcının veritabanında kayıtlı olma kontrolü
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      // Create token
+      // Token oluşturma
       const token = jwt.sign(
-        { user_id: user._id, email },
+        {
+          user_id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email,
+        },
         process.env.TOKEN_KEY,
         {
           expiresIn: "2h",
         }
       );
 
-      // save user token
+      // tokeni kaydet
       user.token = token;
 
-      // user
+      await user.save();
       res.status(200).json(user);
+    } else {
+      res.status(400).json({
+        message: "Invalid credentials",
+      });
     }
-    res.status(400).send("Invalid Credentials");
   } catch (err) {
-    console.log(err);
+    res.status(404).json({
+      message: err.message,
+    });
   }
-
-}
+};
