@@ -10,7 +10,7 @@ export const register = async (req, res) => {
 
      // email ve password girilmiş mi kontrolü
     if (!(email && password && firstName && lastName)) {
-      res.status(400).send("All input is required");
+      res.status(400).send("Tüm alanlar zorunludur");
     }
 
  
@@ -18,7 +18,7 @@ export const register = async (req, res) => {
 
   // kullanıcının veritabanında kayıtlı olma kontrolü
     if (oldUser) {
-      return res.status(409).send("User Already Exist. Please Login");
+      return res.status(409).send("Kullanıcı zaten var.Lütfen giriş yapın");
     }
 
     //şifreyi şifrele
@@ -60,7 +60,7 @@ export const login = async (req, res) => {
 
     // email ve password girilmiş mi kontrolü
     if (!(email && password)) {
-      res.status(400).send("All input is required");
+      res.status(400).send("Tüm alanlar zorunludur");
     }
     // kullanıcının veritabanında kayıtlı olma kontrolü
     const user = await User.findOne({ email });
@@ -87,7 +87,7 @@ export const login = async (req, res) => {
       res.status(200).json(user);
     } else {
       res.status(400).json({
-        message: "Invalid credentials",
+        message: "Kullanıcı bulunamadı",
       });
     }
   } catch (err) {
