@@ -1,12 +1,10 @@
-import { LoginType } from './../Models/LoginType';
+import { LoginType } from "../../Components/Login/Models/LoginType";
 import axios from "axios";
- 
- const baseUrl="http://localhost:5000/users/";
+import { Endpoint } from "../Enums/endpoint.enum";
 
- 
- 
+const baseUrl = "http://localhost:5000/";
 
-export async function createUser(data:LoginType) {
-  const response = await axios.post(baseUrl+"login", data);
+export async function login(data: LoginType) {
+  const response = await axios.post(baseUrl + Endpoint.auth_login, data);
   return response.data;
 }
