@@ -3,18 +3,18 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./Layouts/AdminLayout/AdminLayout";
 import Blogs from "./Components/Admin/Blogs/Blogs";
-import Dashboard from "./Components/Admin/Dashboard/Dashboard";
-import Contact from "./Components/Contact/Contact";
-import Login from "./Components/Login/Login";
+import Articles from "./Pages/UserPages/ArticlesPage/ArticlesPage";
+import Dashboard from "./Pages/AdminPages/DashboardPage/Dashboard";
+import Contact from "./Pages/UserPages/ContactPage/Contact";
+import Login from "./Components/Admin/Login/Login";
 import PageNotFound from "./Shared/Components/PageNotFound/PageNotFound";
-import HomePage from "./Components/HomePage/HomePage";
-import About from "./Components/About/About";
-import Header from "./Components/Header/Header";
+import HomePage from "./Pages/UserPages/HomePage/HomePage";
+import UserLayout from "./Layouts/UserLayout/UserLayout";
+import ArticleDetail from "./Pages/UserPages/ArticlesPage/ArticlesDetail/ArticleDetail";
 
 function App() {
   return (
     <BrowserRouter>
-      <Header />
       <Routes>
         <Route path="/Admin" element={<AdminLayout />}>
           <Route path="/Admin" element={<Navigate to="Dashboard" />} />
@@ -23,12 +23,17 @@ function App() {
           <Route path="*" element={<Navigate to="Dashboard" replace />} />
         </Route>
 
-        <Route path="/" element={<Navigate to="HomePage" />} />
-        <Route path="HomePage" element={<HomePage />} />
-        <Route path="About" element={<About />} />
-        <Route path="Contact" element={<Contact />} />
+        <Route path="/" element={<UserLayout />}>
+          <Route path="/" element={<Navigate to="HomePage" />} />
+          <Route path="HomePage" element={<HomePage />} />
+          <Route path="Blogs" element={<Articles />} />
+          <Route path="Blogs/:id" element={<ArticleDetail/>} />
+          <Route path="Contact" element={<Contact />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
+
         <Route path="Login" element={<Login />} />
-        <Route path="*" element={<PageNotFound />} />
+
       </Routes>
     </BrowserRouter>
   );

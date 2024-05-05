@@ -1,4 +1,4 @@
-import { LoginType } from "../../Components/Login/Models/LoginType";
+import { LoginType } from "../../Pages/AdminPages/LoginPage/Models/LoginType";
 import axios from "axios";
 import { Endpoint } from "../Enums/endpoint.enum";
 
